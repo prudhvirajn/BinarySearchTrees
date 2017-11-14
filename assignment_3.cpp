@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cmath>
 
+#define nullptr 0
+
 using namespace std;
 
 class alreadyThere : public exception{
@@ -77,7 +79,7 @@ class binarySearchTree{
 				ptr->lnode = new Node<T>();
 				ptr->lnode->item = value;
 			}
-			size++;
+			size++; 
 		}
 
 		/**Accepts a value and finds it in the binary search tree.
@@ -117,6 +119,18 @@ class binarySearchTree{
 			}
 			return nullptr;
 		}
+		
+		void rotateLeft(Node<T>* ptr){
+			//If there is no node at the given pointer
+			if(ptr == NULL) 
+				return;
+			//If the node is a leaf node then return
+			if(ptr->rnode == NULL && ptr->lnode == NULL)
+				return;
+			//If 
+			
+		}
+	
 
 		void deleteItem(T value){
 			Node<T>* ptr = this->find(value);
@@ -140,9 +154,34 @@ class binarySearchTree{
 		int getSize(){
 			return size;
 		}
+		
+		void emptyTree(){
+			if(root == NULL)
+				return;
+			Node<T>* left = root->lnode;
+			Node<T>* right = root->rnode;
+			delete root;
+			root = NULL;
+			size--;
+			emptyTreeHelper(left);
+			emptyTreeHelper(right);
+			return;
+		}
+		
+		void emptyTreeHelper(Node<T>* head){
+			if(head == NULL)
+				return;
+			Node<T>* left = head->lnode;
+			Node<T>* right = head->rnode;
+			delete head;
+			size--;
+			emptyTreeHelper(left);
+			emptyTreeHelper(right);
+			return;
+		}
 };
 
-#include "display.cpp"
+//#include "display.cpp"
 
 int main(){
 	 binarySearchTree<int> tree;
@@ -161,10 +200,15 @@ int main(){
     }
 	cout << "AD " << pdiddy << endl;
 	cout << "Size: " << tree.getSize() << endl;
-	display(&tree);
-
-	Node<int> *p = tree.find(pdiddy);
-	cout << p->item << endl;
+	//display(&tree);
+	
+	tree.emptyTree();
+	cout << "Size: " << tree.getSize() << endl;
+	if(tree.getRoot() == NULL){
+		cout << "Success" << endl;
+	}
+	//Node<int> *p = tree.find(pdiddy);
+	//cout << p->item << endl;
 
 
 	return 0;
