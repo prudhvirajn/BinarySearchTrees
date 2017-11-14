@@ -2,12 +2,26 @@
 
 using namespace std;
 
+class alreadyThere : public exception{
+	virtual const char* what() const throw(){
+		return "The item already exists";
+	}
+};
+
+class notFound : public exception{
+	virtual const char* what() const throw(){
+		return "The value was not found";
+	}
+}
+
+//Node template class to store values and pointer to the left and right sub trees
 template <class T>
 struct Node{
 	T item;
 	Node* lnode;
 	Node* rnode;
 };
+
 
 template <class T>
 class binarySearchTree{
@@ -21,6 +35,7 @@ class binarySearchTree{
 			root = NULL;
 		}
 
+		/**Accepts in value and inserts in the tree if the value does not exist**/
 		void insert(T value){
 			//If tree is empty then add at the root
 			if(root == NULL){
@@ -37,7 +52,8 @@ class binarySearchTree{
 
 			while(1){
 				if(value == ptr->item){
-					throw("This value already exists in the binary search tree");
+					alreadyThere err;
+					throw(err);
 				}else if(value < ptr->item){
 					if(ptr->lnode){
 						ptr = ptr->lnode;
@@ -72,6 +88,8 @@ class binarySearchTree{
 			return;
 		}
 
+		/**Accepts a value and finds it in the binary search tree.
+		If found then returns pointer to that node, else return null pointer.**/ 
 		Node<T>* find(T value){
 			//If tree is empty then add at the root
 			if(root == NULL){
@@ -107,6 +125,17 @@ class binarySearchTree{
 			}
 			return nullptr;
 		}
+
+		void deleteItem(T value){
+			Node<T>* ptr = this->find(value);
+			if(ptr){
+				//Do Something
+			}else{
+				notFound err;
+				throw(err);
+			}
+			return;
+		}
 };
 
 
@@ -115,7 +144,12 @@ int main(){
 	tree.insert(2);
 	tree.insert(3);
 	tree.insert(1);
-	//tree.insert(1);
+	tree.insert(1);
+	try{
+		tree.insert(1);
+	}catch(exception &err){
+		cout << err.what() << endl;
+	}
 	Node<int> *p = tree.find(2);
 	cout << p->item << endl;
 	return 0;
