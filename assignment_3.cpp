@@ -30,12 +30,13 @@ struct Node{
 template <class T>
 class binarySearchTree{
 	private:
-		int size;
+		int size, height;
 		Node<T>* root;
 
 	public:
 		binarySearchTree(){
 			size = 0;
+			height = 0;
 			root = NULL;
 		}
 
@@ -47,12 +48,13 @@ class binarySearchTree{
 				root = new Node<T>();
 				root->item = value;
 				size++;
+				height++;
 				return;
 			}
 
 			Node<T>* ptr = root;
-
-			while(1){
+			int depth = 1; // track the depth of the new node
+			while(true){
 				if(value == ptr->item){
 					// alreadyThere err;
 					// throw(err);
@@ -60,12 +62,14 @@ class binarySearchTree{
 				}else if(value < ptr->item){
 					if(ptr->lnode){
 						ptr = ptr->lnode;
+						depth++;
 					}else{
 						break;
 					}
 				}else{
 					if(ptr->rnode){
 						ptr = ptr->rnode;
+						depth++;
 					}else{
 						break;
 					}
@@ -80,6 +84,8 @@ class binarySearchTree{
 				ptr->lnode->item = value;
 			}
 			size++; 
+			depth++;
+			if(height < depth) height = depth;
 		}
 
 		/**Accepts a value and finds it in the binary search tree.
@@ -144,7 +150,7 @@ class binarySearchTree{
 		}
 
 		int getHeight(){
-			return log2(size) + 1;
+			return height;
 		}
 
 		Node<T>* getRoot(){
@@ -181,7 +187,7 @@ class binarySearchTree{
 		}
 };
 
-//#include "display.cpp"
+#include "display.cpp"
 
 int main(){
 	 binarySearchTree<int> tree;
@@ -190,17 +196,16 @@ int main(){
 	// tree.insert(1);
 	// tree.insert(1);
 
-	int pdiddy;
-
     srand(time(0));
-    for(int i = 0; i < 15; i++){
-        int temp = rand() % 100;
+	for(int i = 0; i < 15; i++){
+        int temp = rand() % 30;
         tree.insert(temp);
-		pdiddy = temp;
+        cout << " " << temp;
     }
-	cout << "AD " << pdiddy << endl;
+    cout << endl;
+
 	cout << "Size: " << tree.getSize() << endl;
-	//display(&tree);
+	display(&tree);
 	
 	tree.emptyTree();
 	cout << "Size: " << tree.getSize() << endl;
@@ -209,7 +214,5 @@ int main(){
 	}
 	//Node<int> *p = tree.find(pdiddy);
 	//cout << p->item << endl;
-
-
 	return 0;
 }
