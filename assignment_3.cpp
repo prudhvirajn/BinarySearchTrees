@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cmath>
 
+#define nullptr 0
+
 using namespace std;
 
 class alreadyThere : public exception{
@@ -13,7 +15,7 @@ class notFound : public exception{
 	virtual const char* what() const throw(){
 		return "The value was not found";
 	}
-}
+};
 
 //Node template class to store values and pointer to the left and right sub trees
 template <class T>
@@ -29,12 +31,13 @@ struct Node{
 template <class T>
 class binarySearchTree{
 	private:
-		int size;
+		int size, height;
 		Node<T>* root;
 
 	public:
 		binarySearchTree(){
 			size = 0;
+			height = 0;
 			root = NULL;
 		}
 
@@ -46,26 +49,31 @@ class binarySearchTree{
 				root = new Node<T>();
 				root->item = value;
 				size++;
+				height++;
 				return;
 			}
 
 			Node<T>* ptr = root;
-
-			while(1){
+			int depth = 1; // track the depth of the new node
+			while(true){
 				if(value == ptr->item){
 					alreadyThere err;
 					throw(err);
 					// throw("This value already exists in the binary search tree");
+					// alreadyThere err;
+					// throw(err);
 					return;
 				}else if(value < ptr->item){
 					if(ptr->lnode){
 						ptr = ptr->lnode;
+						depth++;
 					}else{
 						break;
 					}
 				}else{
 					if(ptr->rnode){
 						ptr = ptr->rnode;
+						depth++;
 					}else{
 						break;
 					}
@@ -79,11 +87,13 @@ class binarySearchTree{
 				ptr->lnode = new Node<T>();
 				ptr->lnode->item = value;
 			}
-			size++;
+			size++; 
+			depth++;
+			if(height < depth) height = depth;
 		}
 
 		/**Accepts a value and finds it in the binary search tree.
-		If found then returns pointer to that node, else return null pointer.**/ 
+		If found then returns pointer to that node, else return null pointer.**/
 		Node<T>* find(T value){
 			//If tree is empty then add at the root
 			if(root == NULL){
@@ -119,6 +129,18 @@ class binarySearchTree{
 			}
 			return nullptr;
 		}
+		
+		void rotateLeft(Node<T>* ptr){
+			//If there is no node at the given pointer
+			if(ptr == NULL) 
+				return;
+			//If the node is a leaf node then return
+			if(ptr->rnode == NULL && ptr->lnode == NULL)
+				return;
+			//If 
+			
+		}
+	
 
 		void deleteItem(T value){
 			Node<T>* ptr = this->find(value);
@@ -130,18 +152,49 @@ class binarySearchTree{
 			}
 			return;
 		}
+
 		int getHeight(){
-			return log2(size) + 1;
+			return height;
 		}
 
 		Node<T>* getRoot(){
 			return root;
+		}
+
+		int getSize(){
+			return size;
+		}
+		
+		void emptyTree(){
+			if(root == NULL)
+				return;
+			Node<T>* left = root->lnode;
+			Node<T>* right = root->rnode;
+			delete root;
+			root = NULL;
+			size--;
+			emptyTreeHelper(left);
+			emptyTreeHelper(right);
+			return;
+		}
+		
+		void emptyTreeHelper(Node<T>* head){
+			if(head == NULL)
+				return;
+			Node<T>* left = head->lnode;
+			Node<T>* right = head->rnode;
+			delete head;
+			size--;
+			emptyTreeHelper(left);
+			emptyTreeHelper(right);
+			return;
 		}
 };
 
 #include "display.cpp"
 
 int main(){
+
 	binarySearchTree<int> tree;
 	tree.insert(2);
 	tree.insert(3);
@@ -163,13 +216,33 @@ int main(){
 
 	display(&tree);
 	// binarySearchTree<int> tree;
+
+	 binarySearchTree<int> tree;
+
 	// tree.insert(2);
 	// tree.insert(3);
 	// tree.insert(1);
 	// tree.insert(1);
-	// Node<int> *p = tree.find(2);
-	// cout << p->item << endl;
 
+    srand(time(0));
+	for(int i = 0; i < 15; i++){
+        int temp = rand() % 30;
+        tree.insert(temp);
+        cout << " " << temp;
+    }
+    cout << endl;
+
+
+	cout << "Size: " << tree.getSize() << endl;
+	display(&tree);
+	
+	tree.emptyTree();
+	cout << "Size: " << tree.getSize() << endl;
+	if(tree.getRoot() == NULL){
+		cout << "Success" << endl;
+	}
+	//Node<int> *p = tree.find(pdiddy);
+	//cout << p->item << endl;
 
 	return 0;
 }
