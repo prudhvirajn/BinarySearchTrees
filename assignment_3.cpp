@@ -21,6 +21,7 @@ struct Node{
 	T item;
 	Node* lnode;
 	Node* rnode;
+	int balanceFactor;
 	Node() : lnode(), rnode() {}
 };
 
@@ -52,13 +53,10 @@ class binarySearchTree{
 
 			while(1){
 				if(value == ptr->item){
-<<<<<<< HEAD
 					alreadyThere err;
 					throw(err);
-=======
 					// throw("This value already exists in the binary search tree");
 					return;
->>>>>>> 2d659c099af9d41219aed66a26c1f6471067367c
 				}else if(value < ptr->item){
 					if(ptr->lnode){
 						ptr = ptr->lnode;
@@ -122,7 +120,6 @@ class binarySearchTree{
 			return nullptr;
 		}
 
-<<<<<<< HEAD
 		void deleteItem(T value){
 			Node<T>* ptr = this->find(value);
 			if(ptr){
@@ -132,14 +129,13 @@ class binarySearchTree{
 				throw(err);
 			}
 			return;
-=======
+		}
 		int getHeight(){
 			return log2(size) + 1;
 		}
 
 		Node<T>* getRoot(){
 			return root;
->>>>>>> 2d659c099af9d41219aed66a26c1f6471067367c
 		}
 };
 
@@ -147,7 +143,6 @@ class binarySearchTree{
 
 int main(){
 	binarySearchTree<int> tree;
-<<<<<<< HEAD
 	tree.insert(2);
 	tree.insert(3);
 	tree.insert(1);
@@ -159,7 +154,7 @@ int main(){
 	}
 	Node<int> *p = tree.find(2);
 	cout << p->item << endl;
-=======
+
     srand(time(0));
     for(int i = 0; i < 15; i++){
         int temp = rand() % 100;
@@ -176,6 +171,5 @@ int main(){
 	// cout << p->item << endl;
 
 
->>>>>>> 2d659c099af9d41219aed66a26c1f6471067367c
 	return 0;
 }
