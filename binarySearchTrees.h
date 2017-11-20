@@ -3,16 +3,21 @@
 
 using namespace std;
 
+/**
+* Error class to indicate item is already there in the list
+*/
 class alreadyThere : public exception{
 	virtual const char* what() const throw(){
 		return "The item already exists";
 	}
 };
 
+/**
+* Template Node Struct
+*/
 template <class T>
-class Node
+struct Node
 {
-public:
 	T value;
 	int height; 
 	Node *left, *right;
@@ -26,7 +31,10 @@ class binarySearchTree{
 		Node<T>* root;
 		Node<T>* temp;
 
-		//Rotates right and returns the new parent
+		/** 
+		* Rotates right and returns the new parent
+		* @param Pointer to the parent node
+		*/
 		Node<T>* rightRotate(Node<T>* node){
 			Node<T>* left = node->left;
 			Node<T>* sub_right = node->left->right;
@@ -40,7 +48,10 @@ class binarySearchTree{
 			return left;
 		}
 
-		//Rotates left and returns the new parent
+		/**
+		* Rotates left and returns the new parent
+		* @param Pointer to the parent node
+		*/
 		Node<T>* leftRotate(Node<T>* node){
 			Node<T>* right = node->right;
 			Node<T>* sub_left = node->right->left;
@@ -54,13 +65,19 @@ class binarySearchTree{
 			return right;
 		}
 
-		//Updates the height value in the node that is passed 
+		/**
+		* Updates the height value in the node that is passed
+		* @param Pointer to a node
+		*/ 
 		void updateHeight(Node<T>* node){
 			node->height = max(getHeight(node->left), getHeight(node->right))+1;
 			return;
 		}
 
-		//Returns the height of the sub tree where the node passed is the root of the sub tree
+		/**
+		* Returns the height of the sub tree where the node passed is the root of the sub tree
+		* @param Pointer to a node
+		*/
 		int getHeight(Node<T>* node){
 			if(node){
 				return node->height;
@@ -68,10 +85,19 @@ class binarySearchTree{
 			return 0;
 		}
 
+		/**
+		* Returns the balancing factor of the node
+		* @param Pointer to a node
+		*/
 		int getBalance(Node<T>* node){
 			return getHeight(node->left) - getHeight(node->right);
 		}
 
+		/**
+		* Balances the node for insertion
+		* @param Pointer to a node
+		* @param Value for comparison
+		*/
 		Node<T>* balanceNode(Node<T>* node, int val){
 			// If this node becomes unbalanced, then
 		    // there are 4 cases
@@ -99,7 +125,11 @@ class binarySearchTree{
 		    }
 		}
 
-		//Accepts a value and then creates and returns a new node
+		/**
+		* Accepts a value and then creates and returns a new node
+		* to the node is returned, else a null pointer is returned
+		* @param value of template class
+		*/
 		Node<T>* newNode(T val){
 			Node<T>* node = new Node<T>();
 			node->value = val;
@@ -107,7 +137,12 @@ class binarySearchTree{
 			return node;
 		}
 
-		//Accepts a value and a node to begin, then inserts value depending on node
+		/**
+		* Accepts a value and a node to begin, then inserts value depending on node
+		* to the node is returned, else a null pointer is returned
+		* @param value of template class
+		* @param Pointer to a parent node
+		*/
 		Node<T>* Insert(T val, Node<T>* node){
 			//If node is null then creates a new node and returns a pointer to the new node
 			if(node == NULL){
@@ -132,8 +167,12 @@ class binarySearchTree{
 		    return node;
 		}
 
-		/**Accepts and finds the value in the sub tree, if found then a pointer
-		to the node is returned, else a null pointer is returned**/
+		/**
+		* Accepts and finds the value in the sub tree, if found then a pointer
+		* to the node is returned, else a null pointer is returned
+		* @param value of template class
+		* @param Pointer to a parent node
+		*/
 		Node<T>* Find(T val, Node<T>* node){
 			if(node == NULL)
 				return nullptr;
@@ -146,7 +185,10 @@ class binarySearchTree{
 			return Find(val, node->right);
 		}
 
-		//Empties the tree
+		/**
+		* Empties the sub tree
+		* @param Pointer to the parent node of the sub tree
+		*/
 		void EmptyTree(Node<T>*node){
 			if(node == NULL)
 				return;
@@ -156,7 +198,12 @@ class binarySearchTree{
 			return;
 		}
 
-		//Gets the ascending order of a sub tree and appends it to the vector
+		/**
+		* Gets the ascending order of a sub tree and appends it to the vector
+		* in that sub tree
+		* @param vector passed by reference
+		* @param Pointer to a parent node
+		*/
 		void getAscendingOrder(vector<Node<T>*> &vec, Node<T>* parent){
 			if(parent->left != NULL){
 				getAscendingOrder(vec, parent->left);
@@ -180,6 +227,12 @@ class binarySearchTree{
 			return node;
 		}
 
+		/**
+		* Removes the node containg the value 
+		* and returns the newly ordered sub tree after rebalancing it.
+		* @param Value to be removed
+		* @param Pointer to a node
+		*/
 		Node<T>* Remove(T val, Node<T>* node){
 			if (node == NULL){
 				temp = NULL;
@@ -239,42 +292,60 @@ class binarySearchTree{
 		}
 
 	public:
-		//Constructor
+		/**
+		* Constructor
+		*/
 		binarySearchTree(){
 			root = NULL;
 			temp = NULL;
 			size = 0;
 		}
 
-		//Inserts a value in the tree
+		/**
+		* Inserts a value in the tree
+		* @param Value to be inserted
+		*/
 		void Insert(T val){
 			root = Insert(val, root);
 			return;
 		}
 
-		/**Accepts and finds the value in the tree, if found then a pointer
-		to the node is returned, else a null pointer is returned**/
+		/**
+		* Accepts and finds the value in the tree, if found then a pointer
+		* to the node is returned, else a null pointer is returned
+		* @param Value to be found
+		*/
 		Node<T>* Find(T val){
 			return Find(val, root);
 		}
 
-		//Removes a value from the tree
+		/**
+		* Removes a value from the tree
+		* @param Value to be found
+		*/
 		Node<T>* Remove(T val){
 			temp = NULL;
 			root = Remove(val, root);
 			return temp;
 		}
 
-		//Returns the size of the tree
+		/**
+		* Returns the size of the tree
+		*/
 		int Size(){
 			return size;
 		}
 
+		/**
+		* Returns a constant pointer to the root of the tree
+		*/
 		const Node<T>* getRoot(){
 			return root;
 		}
 
-		//Empties the tree
+		/**
+		* Empties the tree
+		*/
 		void EmptyTree(){
 			if(root == NULL)
 				return;
@@ -285,7 +356,9 @@ class binarySearchTree{
 			return;
 		}
 
-		//Gets the ascending order of Nodes in the tree and returns it as an array
+		/**
+		* Gets the ascending order of Nodes in the tree and returns it as an array
+		*/
 		Node<T>* getAscendingOrder(){
 			vector<Node<T>*> vec;
 			getAscendingOrder(vec, root);
@@ -297,7 +370,9 @@ class binarySearchTree{
 			return arr;
 		}
 
-		//Gets the descedning order of Nodes in the tree and returns it as an array
+		/**
+		* Gets the descedning order of Nodes in the tree and returns it as an array
+		*/
 		Node<T>* getDescendingOrder(){
 			Node<T>* arr = getAscendingOrder();
 			Node<T>* arr2 = new Node<T>[size];
@@ -307,9 +382,16 @@ class binarySearchTree{
 			return arr2;
 		}
 
+		/**
+		* Returns the height of the tree
+		*/
 		int getHeight(){
 			return getHeight(root);
 		}
+
+		/**
+		* Destructor
+		*/
 		~binarySearchTree(){
 			EmptyTree();
 		}
