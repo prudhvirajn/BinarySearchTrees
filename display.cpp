@@ -1,6 +1,7 @@
 #include <cmath>
 #include <iomanip>
 #include <vector>
+#include "main.h"
 
 void getLine(const Node<int> *root, int depth, vector<int>& vals){
     int placeholder = -1;
