@@ -74,22 +74,19 @@ class binarySearchTree{
 				ptr->lnode->item = value;
 			}
 			size++;
+			balance();
 		}
 
 		/**Accepts a value and finds it in the binary search tree.
 		If found then returns pointer to that node, else return null pointer.**/
 		Node<T>* find(T value){
-			//If tree is empty then add at the root
 			if(root == NULL){
 				return nullptr;
 			}
-
 			Node<T>* ptr = root;
 			if(value == ptr->item){
-				//cout << "Found item" << endl;
 				return ptr;
 			}
-
 			//If tree is not empty then traverse until you find the appropiate terminating node
 			while(ptr->lnode || ptr->rnode){
 				if(value == ptr->item){
@@ -194,7 +191,18 @@ class binarySearchTree{
 		void deleteItem(T value){
 			Node<T>* ptr = this->find(value);
 			if(ptr){
-				//Do Something
+				if(ptr->lnode){
+					*ptr = *ptr->lnode;
+					delete ptr->lnode;
+					ptr->lnode = NULL;
+				} else if(ptr->rnode){
+					*ptr = *ptr->rnode;
+					delete ptr->rnode;
+					ptr->rnode = NULL;
+				} else {
+					delete ptr;
+					ptr = NULL;
+				}
 			}else{
 				notFound err;
 				throw(err);
@@ -255,21 +263,30 @@ int main(){
 
 	binarySearchTree<int> tree;
 
-    srand(time(0));
-    for(int i = 0; i < 10; i++){
-        int temp = rand() % 20;
-		try{
-			tree.insert(temp);
-		}catch(exception &err){
-			cout << err.what() << endl;
-		}
-    }
+    // srand(time(0));
+    // for(int i = 0; i < 10; i++){
+    //     int temp = rand() % 20;
+	// 	try{
+	// 		tree.insert(temp);
+	// 	}catch(exception &err){
+	// 		cout << err.what() << endl;
+	// 	}
+    // }
+
+	tree.insert(10);
+	tree.insert(1);
+	tree.insert(0);
+	tree.insert(17);
+	tree.insert(5);
+	tree.insert(14);
+	tree.insert(19);
+
+
+	tree.deleteItem(0);
 
 
 	display(&tree);
 
-	tree.balance();
-	display(&tree);
 
 	// cout << "Size: " << tree.getSize() << endl;
 	// display(&tree);
