@@ -1,8 +1,6 @@
 #include <iostream>
 #include <cmath>
 
-#define nullptr 0
-
 using namespace std;
 
 class alreadyThere : public exception{
@@ -23,7 +21,6 @@ struct Node{
 	T item;
 	Node* lnode;
 	Node* rnode;
-	int balanceFactor;
 	Node() : lnode(), rnode() {}
 };
 
@@ -35,21 +32,16 @@ class binarySearchTree{
 		Node<T>* root;
 
 	public:
-		binarySearchTree(){
-			size = 0;
-			height = 0;
-			root = NULL;
-		}
+		binarySearchTree() : size(0), height(0), root() {}
 
 		/**Accepts in value and inserts in the tree if the value does not exist**/
 		void insert(T value){
 			//If tree is empty then add at the root
 			if(root == NULL){
 				//cout << "Creating a new tree" << endl;
-				root = new Node<T>();
+				root = new Node<T>;
 				root->item = value;
 				size++;
-				height++;
 				return;
 			}
 
@@ -59,21 +51,15 @@ class binarySearchTree{
 				if(value == ptr->item){
 					alreadyThere err;
 					throw(err);
-					// throw("This value already exists in the binary search tree");
-					// alreadyThere err;
-					// throw(err);
-					return;
 				}else if(value < ptr->item){
 					if(ptr->lnode){
 						ptr = ptr->lnode;
-						depth++;
 					}else{
 						break;
 					}
 				}else{
 					if(ptr->rnode){
 						ptr = ptr->rnode;
-						depth++;
 					}else{
 						break;
 					}
@@ -81,15 +67,13 @@ class binarySearchTree{
 			}
 
 			if(value > ptr->item){
-				ptr->rnode = new Node<T>();
+				ptr->rnode = new Node<T>;
 				ptr->rnode->item = value;
 			}else{
-				ptr->lnode = new Node<T>();
+				ptr->lnode = new Node<T>;
 				ptr->lnode->item = value;
 			}
-			size++; 
-			depth++;
-			if(height < depth) height = depth;
+			size++;
 		}
 
 		/**Accepts a value and finds it in the binary search tree.
@@ -129,18 +113,83 @@ class binarySearchTree{
 			}
 			return nullptr;
 		}
-		
-		void rotateLeft(Node<T>* ptr){
-			//If there is no node at the given pointer
-			if(ptr == NULL) 
-				return;
-			//If the node is a leaf node then return
-			if(ptr->rnode == NULL && ptr->lnode == NULL)
-				return;
-			//If 
-			
+
+		// fail
+
+		// void rotateLeft(Node<T>** ptr){
+		// 	//If there is no node at the given pointer
+		// 	if(*ptr == NULL)
+		// 		return;
+		// 	//If the node has no right node then return
+		// 	if((*ptr)->rnode == NULL)
+		// 		return;
+		// 	// store rnode as temp
+		// 	Node<T>* temp = (*ptr)->rnode;
+		// 	// make rnode of current equal to lnode of rnode
+		// 	(*ptr)->rnode = (*ptr)->rnode->lnode;
+		// 	// make lnode of rnode equal to current
+		// 	temp->lnode = *ptr;
+		// 	// make current value equal to temp
+		// 	*ptr = temp;
+		// }
+		//
+		// void rotateRight(Node<T>** ptr){
+		// 	//If there is no node at the given pointer
+		// 	if(*ptr == NULL)
+		// 		return;
+		// 	//If the node has no right node then return
+		// 	if((*ptr)->lnode == NULL)
+		// 		return;
+		// 	// store lnode as temp
+		// 	Node<T>* temp = (*ptr)->lnode;
+		// 	// make lnode of current equal to rnode of lnode
+		// 	(*ptr)->lnode = (*ptr)->lnode->rnode;
+		// 	// make rnode of lnode equal to current
+		// 	temp->rnode = *ptr;
+		// 	// make current value equal to temp
+		// 	*ptr = temp;
+		// }
+
+			/* This function traverse the skewed binary tree and
+		stores its nodes pointers in vector nodes[] */
+		void storeBSTNodes(Node<T>* root, vector<Node<T>*> &nodes){
+			// Base case
+			if (root==NULL)
+			    return;
+			// Store nodes in Inorder (which is sorted
+			// order for BST)
+			storeBSTNodes(root->lnode, nodes);
+			nodes.push_back(root);
+			storeBSTNodes(root->rnode, nodes);
 		}
-	
+		/* Recursive function to construct binary tree */
+		Node<T>* buildTreeUtil(vector<Node<T>*> &nodes, int start, int end){
+			// base case
+			if (start > end)
+			    return NULL;
+			/* Get the middle element and make it root */
+			int mid = (start + end)/2;
+			Node<T>* root = nodes[mid];
+
+			/* Using index in Inorder traversal, construct
+			   left and right subtress */
+			root->lnode = buildTreeUtil(nodes, start, mid-1);
+			root->rnode = buildTreeUtil(nodes, mid+1, end);
+
+			return root;
+		}
+
+		// This functions converts an unbalanced BST to
+		// a balanced BST
+		void balance(){
+			// Store nodes of given BST in sorted order
+			vector<Node<T>*> nodes;
+			storeBSTNodes(root, nodes);
+
+			// Constucts BST from nodes[]
+			int n = nodes.size();
+			root = buildTreeUtil(nodes, 0, n-1);
+		}
 
 		void deleteItem(T value){
 			Node<T>* ptr = this->find(value);
@@ -154,17 +203,22 @@ class binarySearchTree{
 		}
 
 		int getHeight(){
-			return height;
+			return height_helper(root);
 		}
 
-		Node<T>* getRoot(){
-			return root;
+		int height_helper(Node<T>* ptr){
+			if(!ptr) return 0;
+			return max(1 + height_helper(ptr->lnode), 1 + height_helper(ptr->rnode));
+		}
+
+		Node<T>** getRoot(){
+			return &root;
 		}
 
 		int getSize(){
 			return size;
 		}
-		
+
 		void emptyTree(){
 			if(root == NULL)
 				return;
@@ -177,7 +231,7 @@ class binarySearchTree{
 			emptyTreeHelper(right);
 			return;
 		}
-		
+
 		void emptyTreeHelper(Node<T>* head){
 			if(head == NULL)
 				return;
@@ -189,6 +243,10 @@ class binarySearchTree{
 			emptyTreeHelper(right);
 			return;
 		}
+
+		~binarySearchTree(){
+			emptyTree();
+		}
 };
 
 #include "display.cpp"
@@ -196,53 +254,29 @@ class binarySearchTree{
 int main(){
 
 	binarySearchTree<int> tree;
-	tree.insert(2);
-	tree.insert(3);
-	tree.insert(1);
-	tree.insert(1);
-	try{
-		tree.insert(1);
-	}catch(exception &err){
-		cout << err.what() << endl;
-	}
-	Node<int> *p = tree.find(2);
-	cout << p->item << endl;
 
     srand(time(0));
-    for(int i = 0; i < 15; i++){
-        int temp = rand() % 100;
-        tree.insert(temp);
+    for(int i = 0; i < 10; i++){
+        int temp = rand() % 20;
+		try{
+			tree.insert(temp);
+		}catch(exception &err){
+			cout << err.what() << endl;
+		}
     }
 
+
 	display(&tree);
-	// binarySearchTree<int> tree;
 
-	 binarySearchTree<int> tree;
-
-	// tree.insert(2);
-	// tree.insert(3);
-	// tree.insert(1);
-	// tree.insert(1);
-
-    srand(time(0));
-	for(int i = 0; i < 15; i++){
-        int temp = rand() % 30;
-        tree.insert(temp);
-        cout << " " << temp;
-    }
-    cout << endl;
-
-
-	cout << "Size: " << tree.getSize() << endl;
+	tree.balance();
 	display(&tree);
-	
-	tree.emptyTree();
-	cout << "Size: " << tree.getSize() << endl;
-	if(tree.getRoot() == NULL){
-		cout << "Success" << endl;
-	}
-	//Node<int> *p = tree.find(pdiddy);
-	//cout << p->item << endl;
 
-	return 0;
+	// cout << "Size: " << tree.getSize() << endl;
+	// display(&tree);
+	//
+	// tree.emptyTree();
+	// cout << "Size: " << tree.getSize() << endl;
+	// if(tree.getRoot() == NULL){
+	// 	cout << "Success" << endl;
+	// }
 }
