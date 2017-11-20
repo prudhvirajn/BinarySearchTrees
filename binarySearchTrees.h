@@ -24,6 +24,7 @@ class binarySearchTree{
 	private:
 		int size;
 		Node<T>* root;
+		Node<T>* temp;
 
 		//Rotates right and returns the new parent
 		Node<T>* rightRotate(Node<T>* node){
@@ -67,10 +68,14 @@ class binarySearchTree{
 			return 0;
 		}
 
-		void balanceNode(Node<T>* node){
+		int getBalance(Node<T>* node){
+			return getHeight(node->left) - getHeight(node->right);
+		}
+
+		Node<T>* balanceNode(Node<T>* node, int val){
 			// If this node becomes unbalanced, then
 		    // there are 4 cases
-			int balance = getHeight(node->left) - getHeight(node->right);		 
+			int balance = getBalance(node);		 
 		    // Left Left Case
 		    if (balance > 1 && val < node->left->value)
 		        return rightRotate(node);
@@ -92,7 +97,6 @@ class binarySearchTree{
 		        node->right = rightRotate(node->right);
 		        return leftRotate(node);
 		    }
-		    return;
 		}
 
 		//Accepts a value and then creates and returns a new node
@@ -123,7 +127,7 @@ class binarySearchTree{
 			}
 			updateHeight(node);
 			
-		 	balanceNode(node);
+		 	balanceNode(node, val);
 		    /* return the (unchanged) node pointer */
 		    return node;
 		}
@@ -164,10 +168,81 @@ class binarySearchTree{
 			return;
 		}
 
+		/**
+		* Accepts a node and finds, removes and returns the smallest value
+		* in that sub tree
+		* @param Pointer to a node of type Node<T>
+		*/
+		Node<T>* minNode(Node<T>* node){
+			while(node->left){
+				node = node->left;
+			}
+			return node;
+		}
+
+		Node<T>* Remove(T val, Node<T>* node){
+			if (node == NULL){
+				temp = NULL;
+				return node;
+			}
+
+			if(val < node->value){
+				node->left = Remove(val, node->left);
+			}else if(val > node->value){
+				node->right = Remove(val, node->right);
+			}else{
+				temp = node;
+				if((node->left == NULL) || (node->right == NULL)){
+					Node<T>* ptr = node->left ? node->left : node->right;
+					size--;				
+					if(ptr){
+						node = ptr;
+					}else{
+						return NULL;							
+					}
+				}else{
+					Node<T>* ptr = minNode(node->right);
+					node->value = ptr->value;
+					ptr->value = val;
+					node->right = Remove(val, node->right);
+				}
+			}
+			updateHeight(node);
+
+			int balance = getBalance(node);
+
+			// If this node becomes unbalanced, then there are 4 cases
+ 
+		    // Left Left Case
+		    if (balance > 1 && getBalance(node->left) >= 0)
+		        return rightRotate(node);
+		 
+		    // Left Right Case
+		    if (balance > 1 && getBalance(node->left) < 0)
+		    {
+		        node->left =  leftRotate(node->left);
+		        return rightRotate(node);
+		    }
+		 
+		    // Right Right Case
+		    if (balance < -1 && getBalance(node->right) <= 0)
+		        return leftRotate(node);
+		 
+		    // Right Left Case
+		    if (balance < -1 && getBalance(node->right) > 0)
+		    {
+		        node->right = rightRotate(node->right);
+		        return leftRotate(node);
+		    }
+		 
+		    return node;
+		}
+
 	public:
 		//Constructor
 		binarySearchTree(){
 			root = NULL;
+			temp = NULL;
 			size = 0;
 		}
 
@@ -184,13 +259,19 @@ class binarySearchTree{
 		}
 
 		//Removes a value from the tree
-		void Remove(T val){
-			return;
+		Node<T>* Remove(T val){
+			temp = NULL;
+			root = Remove(val, root);
+			return temp;
 		}
 
 		//Returns the size of the tree
 		int Size(){
 			return size;
+		}
+
+		const Node<T>* getRoot(){
+			return root;
 		}
 
 		//Empties the tree

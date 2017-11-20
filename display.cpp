@@ -1,16 +1,15 @@
 #include <cmath>
 #include <iomanip>
 #include <vector>
-#include "main.h"
 
 void getLine(const Node<int> *root, int depth, vector<int>& vals){
     int placeholder = -1;
     if(depth <= 1 && root != nullptr){
-        vals.push_back(root->item);
+        vals.push_back(root->value);
         return;
     }
-    if(root->lnode != nullptr){
-        getLine(root->lnode, depth-1, vals);
+    if(root->left != nullptr){
+        getLine(root->left, depth-1, vals);
     } else if(depth-1 <= 1){
         vals.push_back(placeholder);
     } else {
@@ -18,8 +17,8 @@ void getLine(const Node<int> *root, int depth, vector<int>& vals){
         getLine(&temp, depth-1, vals);
     }
 
-    if(root->rnode != nullptr){
-        getLine(root->rnode, depth-1, vals);
+    if(root->right != nullptr){
+        getLine(root->right, depth-1, vals);
     } else if(depth-1 <= 1){
         vals.push_back(placeholder);
     } else {
@@ -52,6 +51,6 @@ void display(binarySearchTree<int>* tree){
     int height = tree->getHeight();
     cout << "Got height = " << height << endl;
     for (int i = 1; i <= height; i++){
-        printRow(*tree->getRoot(), height, i);
+        printRow(tree->getRoot(), height, i);
     }
 }
