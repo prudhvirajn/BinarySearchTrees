@@ -1,5 +1,6 @@
+#include <iostream>
+#include <vector>
 
-#include<iostream>
 using namespace std;
 
 class alreadyThere : public exception{
@@ -76,8 +77,16 @@ public:
 		PrintPostOrderTraversal(outputstream, R);
 	}
 
+	void EmptyTree(){
+		DeallocMemory(R);
+		R = NIL = new Node<T>;
+		NIL->h = 0;
+		NIL->left = NIL->right = NULL;
+		size = 0;
+	}
+
 	// When the destructor is called, it invokes the method DeallocMemory which recursively, in a bottom-up style, deallocs the dynamic allocated memory
-	~AVL()
+	~binarySearchTrees()
 	{
 		DeallocMemory(R);
 	}

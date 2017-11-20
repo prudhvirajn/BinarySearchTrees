@@ -1,6 +1,6 @@
 #include <iostream>
 #include <cmath>
-#include <main.h>
+#include "main.h"
 #include "display.cpp"
 
 #define nullptr 0

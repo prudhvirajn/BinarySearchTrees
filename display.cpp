@@ -34,26 +34,12 @@ void printRow(const Node<int> *p, const int height, int depth){
     vector<int> vec;
     getLine(p, depth, vec);
 
-    // int indent = pow(2, height-depth);
-    // for(int i = 0; i < indent; i++) cout << "  ";
-    // bool toggle = true; // start with left
-    // if(vec.size() > 1){
-    //     for(int v : vec){
-    //         if(toggle)
-    //             cout << "/ ";
-    //         else
-    //             cout << " \\";
-    //         toggle = !toggle;
-    //     }
-    //     cout << endl;
-    // }
-
     int indent = pow(2, height-depth) - 1;
     for(int i = 0; i < indent; i++) cout << "  ";
     int inner_spacing = pow(2, height-depth+1) - 1;
-    for(int v : vec){
-        if(v != placeholder){
-            cout << setw(2) << v;
+    for(int i = 0; i < vec.size(); i++){
+        if(vec[i] != placeholder){
+            cout << setw(2) << vec[i];
         } else {
             cout << "  ";
         }
@@ -66,6 +52,6 @@ void display(binarySearchTree<int>* tree){
     int height = tree->getHeight();
     cout << "Got height = " << height << endl;
     for (int i = 1; i <= height; i++){
-        printRow(tree->getRoot(), height, i);
+        printRow(*tree->getRoot(), height, i);
     }
 }
