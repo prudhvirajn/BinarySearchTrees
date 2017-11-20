@@ -1,13 +1,9 @@
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 using namespace std;
 
-class alreadyThere : public exception{
-	virtual const char* what() const throw(){
-		return "The item already exists";
-	}
-};
 
 class notFound : public exception{
 	virtual const char* what() const throw(){
